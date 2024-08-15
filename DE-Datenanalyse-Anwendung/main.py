@@ -44,3 +44,82 @@ def show_scrollable_dialog(parent, title, content):
     scroll.setWidget(scroll_content)
     layout.addWidget(scroll)
     dialog.exec_()
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("📊 Dashboard zur Verwaltung von Verkäufen und Einkäufen")
+        self.resize(1300, 700)
+        # self.setMinimumSize(1300, 600)
+        self.db_name = "sales.db"
+        create_database(self.db_name)
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        main_layout = QHBoxLayout(self.central_widget)
+
+        # 📦 Schaltflächenfeld mit Bildlaufleiste
+        self.button_scroll = QScrollArea()
+        self.button_scroll.setWidgetResizable(True)
+        self.button_container = QWidget()
+        self.button_layout = QVBoxLayout(self.button_container)
+
+        self.add_buttons()
+        self.button_scroll.setWidget(self.button_container)
+        self.button_scroll.setFixedWidth(int(0.22 * self.width()))
+        main_layout.addWidget(self.button_scroll)
+
+        # 📊 Analyseinhalt-Panel
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_content = QWidget()
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.scroll_area.setWidget(self.scroll_content)
+        main_layout.addWidget(self.scroll_area)
+
+        # Abschnitt für Analyseinhalte
+        self.analysis_label = QLabel("📊 Analytisches Dashboard für Verkaufs- und Einkaufsdaten \n(Bitte lesen Sie vor der Nutzung der Anwendung das Benutzerhandbuch.)")
+        self.analysis_label.setStyleSheet("font-weight: bold; font-size: 16px;")
+        self.scroll_layout.addWidget(self.analysis_label)
+
+        self.table_widget = QTableWidget()
+        self.scroll_layout.addWidget(self.table_widget)
+
+        self.report_label = QLabel()
+        self.report_label.setWordWrap(True)
+        self.scroll_layout.addWidget(self.report_label)
+
+        self.profit_label = QLabel()
+        self.profit_label.setWordWrap(True)
+        self.scroll_layout.addWidget(self.profit_label)
+
+        self.time_label = QLabel()
+        self.time_label.setWordWrap(True)
+        self.scroll_layout.addWidget(self.time_label)
+
+        self.inventory_label = QLabel()
+        self.inventory_label.setWordWrap(True)
+        self.scroll_layout.addWidget(self.inventory_label)
+
+        # Diagrammbereich
+        self.chart_label = QLabel(); self.chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.chart_label)
+
+        self.pie_chart_label = QLabel(); self.pie_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.pie_chart_label)
+
+        self.inventory_chart_label = QLabel(); self.inventory_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.inventory_chart_label)
+
+        self.sold_percentage_chart_label = QLabel(); self.sold_percentage_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.sold_percentage_chart_label)
+
+        self.sales_line_chart_label = QLabel(); self.sales_line_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.sales_line_chart_label)
+
+        self.sales_bar_chart_label = QLabel(); self.sales_bar_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.sales_bar_chart_label)
+
+        self.sales_share_chart_label = QLabel(); self.sales_share_chart_label.setAlignment(Qt.AlignCenter)
+        self.scroll_layout.addWidget(self.sales_share_chart_label)
+
+        self.refresh_dashboard()
