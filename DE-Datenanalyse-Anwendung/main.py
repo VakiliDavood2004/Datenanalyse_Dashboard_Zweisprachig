@@ -44,6 +44,8 @@ def show_scrollable_dialog(parent, title, content):
     scroll.setWidget(scroll_content)
     layout.addWidget(scroll)
     dialog.exec_()
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -123,3 +125,155 @@ class MainWindow(QMainWindow):
         self.scroll_layout.addWidget(self.sales_share_chart_label)
 
         self.refresh_dashboard()
+
+    def add_buttons(self):
+        # Hauptschaltflächen des Projekts
+        self.load_csv_button = QPushButton("📁 CSV laden")
+        self.load_csv_button.clicked.connect(self.load_csv)
+        self.button_layout.addWidget(self.load_csv_button)
+
+        self.report_button = QPushButton("📊 Allgemeiner Datenbericht")
+        self.report_button.clicked.connect(self.show_report_popup)
+        self.button_layout.addWidget(self.report_button)
+
+        self.profit_button = QPushButton("💹 Rentabilitätsbericht")
+        self.profit_button.clicked.connect(self.show_profit_popup)
+        self.button_layout.addWidget(self.profit_button)
+
+        self.time_button = QPushButton("📅 Zeitreihenanalyse")
+        self.time_button.clicked.connect(self.show_time_popup)
+        self.button_layout.addWidget(self.time_button)
+
+        self.inventory_button = QPushButton("📦 Bestandsanalyse")
+        self.inventory_button.clicked.connect(self.show_inventory_popup)
+        self.button_layout.addWidget(self.inventory_button)
+
+        # Diagramme
+        self.chart_button = QPushButton("📉 Rentabilitätsdiagramm")
+        self.chart_button.clicked.connect(draw_profit_bar_chart)
+        self.button_layout.addWidget(self.chart_button)
+
+        self.pie_chart_button = QPushButton("🥧 Kreisdiagramm zur Rentabilität")
+        self.pie_chart_button.clicked.connect(draw_profit_pie_chart)
+        self.button_layout.addWidget(self.pie_chart_button)
+
+        self.inventory_chart_button = QPushButton("📦 Bestandsdiagramm")
+        self.inventory_chart_button.clicked.connect(draw_inventory_bar_chart)
+        self.button_layout.addWidget(self.inventory_chart_button)
+
+        self.sold_percent_button = QPushButton("📊 Produktumsatzanteil")
+        self.sold_percent_button.clicked.connect(draw_sold_percentage_pie_chart)
+        self.button_layout.addWidget(self.sold_percent_button)
+
+        self.sales_line_button = QPushButton("📈 Verkaufs-Liniendiagramm")
+        self.sales_line_button.clicked.connect(draw_sales_line_chart)
+        self.button_layout.addWidget(self.sales_line_button)
+
+        self.sales_bar_button = QPushButton("📦 Verkaufs-Balkendiagramm")
+        self.sales_bar_button.clicked.connect(draw_sales_bar_chart)
+        self.button_layout.addWidget(self.sales_bar_button)
+
+        self.sales_share_button = QPushButton("🥧 Produktumsatzanteilsdiagramm")
+        self.sales_share_button.clicked.connect(draw_sales_share_pie_chart)
+        self.button_layout.addWidget(self.sales_share_button)
+
+        # Hilfe-Schaltfläche
+        self.help_button = QPushButton("📘 Leitfaden")
+        self.help_button.clicked.connect(lambda: show_readme(self))
+        self.button_layout.addWidget(self.help_button)
+
+        self.exit_button = QPushButton("❌ Beenden")
+        self.exit_button.clicked.connect(QApplication.quit)
+        self.button_layout.addWidget(self.exit_button)
+
+    def refresh_dashboard(self):
+        display_existing_data(self.db_name, self.table_widget)
+        self.update_summary()
+        self.update_profitability()
+        self.update_time_analysis()
+        self.update_inventory_analysis()
+        self.update_chart_image()
+        self.update_pie_chart_image()
+        self.update_inventory_chart_image()
+        self.update_sold_percentage_chart_image()
+        self.update_sales_line_chart_image()
+        self.update_sales_bar_chart_image()
+        self.update_sales_share_chart_image()
+
+    def load_csv(self):
+        load_csv_and_insert(self, self.db_name, self.table_widget)
+        self.refresh_dashboard()
+
+    def update_summary(self):
+        self.report_label.setText(generate_summary())
+
+    def update_profitability(self):
+        self.profit_label.setText(generate_profitability_report())
+
+    def update_time_analysis(self):
+        self.time_label.setText(generate_time_analysis())
+
+    def update_inventory_analysis(self):
+        self.inventory_label.setText(generate_inventory_analysis())
+
+    def update_chart_image(self):
+        pixmap = get_profit_chart_pixmap()
+        if pixmap:
+            self.chart_label.setPixmap(pixmap)
+
+    def update_pie_chart_image(self):
+        pixmap = get_profit_pie_pixmap()
+        if pixmap:
+            self.pie_chart_label.setPixmap(pixmap)
+
+    def update_inventory_chart_image(self):
+        pixmap = get_inventory_chart_pixmap()
+        if pixmap:
+            self.inventory_chart_label.setPixmap(pixmap)
+
+    def update_sold_percentage_chart_image(self):
+        pixmap = get_sold_percentage_pie_pixmap()
+        if pixmap:
+            self.sold_percentage_chart_label.setPixmap(pixmap)
+
+    def update_sales_line_chart_image(self):
+        pixmap = get_sales_line_chart_pixmap()
+        if pixmap:
+            self.sales_line_chart_label.setPixmap(pixmap)
+
+    def update_sales_bar_chart_image(self):
+        pixmap = get_sales_bar_chart_pixmap()
+        if pixmap:
+            self.sales_bar_chart_label.setPixmap(pixmap)
+
+    def update_sales_share_chart_image(self):
+        pixmap = get_sales_share_pie_pixmap()
+        if pixmap:
+            self.sales_share_chart_label.setPixmap(pixmap)
+
+    def show_report_popup(self):
+        show_scrollable_dialog(self, "📊 Numerischer Bericht" , generate_summary())
+
+    def show_profit_popup(self):
+        show_scrollable_dialog(self, "💹 Rentabilitätsbericht", generate_profitability_report())
+
+    def show_time_popup(self):
+        show_scrollable_dialog(self, "📈 Zeitreihenanalyse" , generate_time_analysis())
+
+    def show_inventory_popup(self):
+        show_scrollable_dialog(self, "📦 Bestandsanalyse", generate_inventory_analysis())
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    try:
+        with open("style.css", "r", encoding="utf-8") as f:
+            app.setStyleSheet(f.read())
+    except Exception as e:
+        print(f"⚠️ Fehler beim Laden des Stils: {e}")
+
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+# pyinstaller --onefile --windowed --add-data "style.css;." --icon=icon.ico main.py
+# pyinstaller --onefile --windowed --add-data "style.css;." --icon=icon.ico main.py
