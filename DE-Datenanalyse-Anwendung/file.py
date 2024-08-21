@@ -58,3 +58,27 @@ def import_csv_to_db(csv_file, db_name):
     except Exception as e:
         print(f"Fehler beim Einfügen in die Datenbank: {e}")
         return False
+def display_data(data, table_widget):
+    table_widget.setRowCount(len(data))
+    table_widget.setColumnCount(len(data.columns))
+    table_widget.setHorizontalHeaderLabels(data.columns)
+    for i in range(len(data)):
+        for j in range(len(data.columns)):
+            table_widget.setItem(i, j, QTableWidgetItem(str(data.iat[i, j])))
+
+def load_csv_and_insert(parent_widget, db_name, table_widget):
+    file_name, _ = QFileDialog.getOpenFileName(
+        parent_widget, "CSV-Datei auswählen", "", "CSV-Datei (*.csv);;Alle Datei (*)"
+    )
+
+    if file_name:
+        data = load_and_process_csv(file_name)
+        if data is not None:
+            display_data(data, table_widget)
+            success = import_csv_to_db(file_name, db_name)
+            if success:
+                QMessageBox.information(parent_widget, "Erfolg", "Die CSV-Datei wurde erfolgreich in die Datenbank eingefügt.")
+            else:
+                QMessageBox.critical(parent_widget, "Fehler", "Daten konnten nicht in die Datenbank eingefügt werden.")
+        else:
+            QMessageBox.critical(parent_widget, "Fehler", "Verarbeitung der CSV-Datei fehlgeschlagen.")
