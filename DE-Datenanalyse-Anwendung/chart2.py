@@ -12,3 +12,38 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 from PyQt5.QtGui import QPixmap
+# 📊 Anzeige des Kreisdiagramms zum Produktgewinn in einem separaten 
+def draw_profit_pie_chart():
+    try:
+        conn = sqlite3.connect("sales.db")
+        df = pd.read_sql_query("SELECT product_name, total_purchase, total_sale FROM sales", conn)
+        conn.close()
+
+        df["profit"] = df["total_sale"] - df["total_purchase"]
+        product_profit = df.groupby("product_name")["profit"].sum()
+        positive = product_profit[product_profit > 0]
+
+        if positive.empty:
+            print("⚠️ Es gibt keine profitablen Produkte zur Anzeige im Diagramm.")
+            return
+
+        labels = positive.index
+        values = positive.values
+        colors = ["green"] * len(positive)
+
+        plt.figure(figsize=(8, 6))
+        plt.pie(
+            values,
+            labels=labels,
+            colors=colors,
+            autopct=lambda pct: f"{pct:.1f}%\n({int(pct/100*sum(values)):,} €)",
+            startangle=140,
+            wedgeprops={'edgecolor': 'white'}
+        )
+        plt.title("Relativer Gewinnanteil der Produkte", fontsize=14)
+        plt.tight_layout()
+        plt.show()
+
+    except Exception as e:
+        print(f"⚠️ Fehler beim Erstellen des Gewinn-Kreisdiagramms: {e}")
+
