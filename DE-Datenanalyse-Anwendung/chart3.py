@@ -13,3 +13,30 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 from PyQt5.QtGui import QPixmap
+# 📉 Darstellung des Lagerbestandsdiagramms in einem separaten Fenster
+def draw_inventory_bar_chart():
+    try:
+        with sqlite3.connect("sales.db") as conn:
+            df = pd.read_sql_query(
+                "SELECT product_name, quantity_purchased, quantity_sold FROM sales", conn)
+
+        df["inventory"] = df["quantity_purchased"] - df["quantity_sold"]
+        product_inventory = df.groupby("product_name")["inventory"].sum().sort_values()
+
+        plt.figure(figsize=(10, 5))
+        bars = plt.bar(product_inventory.index, product_inventory.values, color="dodgerblue")
+        plt.title("📦 Verbleibender Lagerbestand jedes Produkts")
+        plt.xlabel("Produktname")
+        plt.ylabel("Verbleibende Lageranzahl")
+        plt.xticks(rotation=45, ha="right")
+        plt.grid(axis="y", linestyle="--", alpha=0.4)
+
+        for bar, value in zip(bars, product_inventory.values):
+            plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(),
+                     str(int(value)), ha="center", va="bottom", fontsize=9)
+
+        plt.tight_layout()
+        plt.show()
+
+    except Exception as e:
+        print(f"⚠️ Fehler beim Erstellen des Lagerbestandsdiagramms: {e}")
