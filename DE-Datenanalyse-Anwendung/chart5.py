@@ -15,3 +15,27 @@ from PyQt5.QtGui import QPixmap
 
 # ⏳ Erstellung eines Liniendiagramms der Produktverkäufe im Zeitverlauf
 def draw_sales_line_chart():
+    try:
+        with sqlite3.connect("sales.db") as conn:
+            df = pd.read_sql_query(
+                "SELECT product_name, quantity_sold, transaction_date FROM sales", conn)
+
+        df["transaction_date"] = pd.to_datetime(df["transaction_date"])
+        df_grouped = df.groupby(["transaction_date", "product_name"])["quantity_sold"].sum().unstack().fillna(0)
+
+        plt.figure(figsize=(10, 6))
+        for column in df_grouped.columns:
+            plt.plot(df_grouped.index, df_grouped[column], label=column)
+
+        plt.title("📈 Verkaufstrend der Produkte im Zeitverlauf")
+        plt.xlabel("Datum")
+        plt.ylabel("Verkaufte Einheiten")
+        plt.xticks(rotation=45)
+        plt.legend()
+        plt.grid(True, linestyle="--", alpha=0.4)
+        plt.tight_layout()
+        plt.show()
+
+    except Exception as e:
+        print(f"⚠️ Fehler beim Zeichnen des Verkaufs-Liniendiagramms: {e}")
+
