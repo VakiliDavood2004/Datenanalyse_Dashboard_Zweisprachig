@@ -15,6 +15,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 from PyQt5.QtGui import QPixmap
+
 # 🎯 Erstellung eines Kreisdiagramms der Verkaufsanteile der einzelnen Produkte
 def draw_sales_share_pie_chart():
     try:
@@ -47,3 +48,44 @@ def draw_sales_share_pie_chart():
 
     except Exception as e:
         print(f"⚠️Fehler bei der Generierung des Diagramms zur Verkaufsverteilung: {e}")
+
+# 🖼️ Generierung eines Diagrammbildes zur Anzeige im Dashboard
+def get_sales_share_pie_pixmap():
+    try:
+        with sqlite3.connect("sales.db") as conn:
+            df = pd.read_sql_query("SELECT product_name, quantity_sold FROM sales", conn)
+
+        product_sales = df.groupby("product_name")["quantity_sold"].sum()
+        total_sold = product_sales.sum()
+
+        if total_sold == 0:
+            return None
+
+        labels = product_sales.index
+        values = product_sales.values
+        colors = plt.cm.tab20.colors[:len(labels)]
+
+        fig, ax = plt.subplots(figsize=(6.5, 5))
+        ax.pie(
+            values,
+            labels=labels,
+            colors=colors,
+            autopct=lambda pct: f"{pct:.1f}%",
+            startangle=140,
+            wedgeprops={'edgecolor': 'white'}
+        )
+        ax.set_title("🥧 Verkaufsanteil jedes Produkts", fontsize=12)
+
+        buffer = BytesIO()
+        fig.tight_layout()
+        fig.savefig(buffer, format="png")
+        buffer.seek(0)
+
+        pixmap = QPixmap()
+        pixmap.loadFromData(buffer.getvalue())
+        plt.close(fig)
+        return pixmap
+
+    except Exception as e:
+        print(f"⚠️ Fehler bei der Generierung des Verkaufsanteilsbildes: {e}")
+        return None
