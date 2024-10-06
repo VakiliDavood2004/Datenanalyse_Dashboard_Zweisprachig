@@ -15,3 +15,30 @@ Fehlermeldung zurückgegeben.
 import sqlite3
 import pandas as pd
 import numpy as np
+def generate_profitability_report():
+    try:
+        conn = sqlite3.connect("sales.db")
+        df = pd.read_sql_query("SELECT * FROM sales", conn)
+        conn.close()
+
+        # Berechnung des numerischen und prozentualen Gewinns für jede Zeile
+        df["profit"] = df["total_sale"] - df["total_purchase"]
+        df["profit_percent"] = np.where(
+            df["total_purchase"] > 0,
+            np.round((df["profit"] / df["total_purchase"]) * 100, 2),
+            0
+        )
+
+        # Nach Produkt gruppieren
+        grouped = df.groupby("product_name").agg({
+            "profit": "sum",
+            "total_purchase": "sum",
+            "total_sale": "sum"
+        })
+
+        # Berechnung des Rentabilitätsprozentsatzes für jedes Produkt
+        grouped["profit_percent"] = np.where(
+            grouped["total_purchase"] > 0,
+            np.round((grouped["profit"] / grouped["total_purchase"]) * 100, 2),
+            0
+        )
