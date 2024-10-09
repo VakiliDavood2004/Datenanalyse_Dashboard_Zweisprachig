@@ -15,6 +15,7 @@ Fehlermeldung zurückgegeben.
 import sqlite3
 import pandas as pd
 import numpy as np
+
 def generate_profitability_report():
     try:
         conn = sqlite3.connect("sales.db")
@@ -42,3 +43,35 @@ def generate_profitability_report():
             np.round((grouped["profit"] / grouped["total_purchase"]) * 100, 2),
             0
         )
+
+        # Sortierung nach Gesamtgewinn
+        sorted_by_profit = grouped.sort_values(by="profit", ascending=False)
+
+        # Anzeige der Produkte mit dem höchsten Gewinn und Verlust
+        most_profitable = sorted_by_profit.head(3)
+        most_loss = sorted_by_profit.tail(3)
+
+        report_lines = []
+
+        report_lines.append("💰 Top rentable Produkte: ")
+        for name, row in most_profitable.iterrows():
+            report_lines.append(
+                f"  • {name}: Gewinn {row['profit']:,.0f} Euro ({row['profit_percent']}%)"
+            )
+
+        report_lines.append("\n Am wenigsten rentable Produkte (Verlust):")
+        for name, row in most_loss.iterrows():
+            report_lines.append(
+                f"  • {name}: Gewinn {row['profit']:,.0f} Euro ({row['profit_percent']}%)"
+            )
+
+        report_lines.append("\n📊 Vollständige Produktbewertung basierend auf Gewinn:")
+        for name, row in sorted_by_profit.iterrows():
+            report_lines.append(
+                f"  • {name}: Gewinn {row['profit']:,.0f} Euro ({row['profit_percent']}%)"
+            )
+
+        return "\n".join(report_lines)
+
+    except Exception as e:
+        return f"⚠️ Fehler beim Erstellen des Rentabilitätsberichts: {e}"
