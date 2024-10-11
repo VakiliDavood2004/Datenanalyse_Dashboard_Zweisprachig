@@ -13,4 +13,37 @@ für jeden Monat enthält. Im Falle eines Fehlers wird eine entsprechende Warnme
 import sqlite3
 import pandas as pd
 import numpy as np
+def generate_time_analysis():
+    try:
+        conn = sqlite3.connect("sales.db")
+        df = pd.read_sql_query("SELECT * FROM sales", conn)
+        conn.close()
+
+        # Datumsspalte in das Datumsformat konvertieren
+        df["transaction_date"] = pd.to_datetime(df["transaction_date"], errors='coerce')
+
+        # Zeilen mit ungültigen oder fehlenden Datumsangaben entfernen
+        df = df.dropna(subset=["transaction_date"])
+
+        # Tägliche und monatliche Gruppierung
+        daily_summary = df.groupby(df["transaction_date"].dt.date).agg({
+            "total_sale": "sum",
+            "total_purchase": "sum"
+        })
+
+        monthly_summary = df.groupby(df["transaction_date"].dt.to_period("M")).agg({
+            "total_sale": "sum",
+            "total_purchase": "sum"
+        }).sort_index()
+
+        # Umsatzstärkster Tag
+        peak_day = daily_summary["total_sale"].idxmax()
+        peak_day_value = daily_summary["total_sale"].max()
+
+        # Monatlicher Verkaufstrend
+        trend_lines = ["📆 Monatlicher Verkaufstrend:"]
+        for period, row in monthly_summary.iterrows():
+            trend_lines.append(
+                f"  • {period}: Verkäufe {row['total_sale']:,.0f} Einkauf / Euro {row['total_purchase']:,.0f} Euro"
+            )
 
