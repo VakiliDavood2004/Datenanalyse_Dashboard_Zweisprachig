@@ -13,6 +13,7 @@ für jeden Monat enthält. Im Falle eines Fehlers wird eine entsprechende Warnme
 import sqlite3
 import pandas as pd
 import numpy as np
+
 def generate_time_analysis():
     try:
         conn = sqlite3.connect("sales.db")
@@ -47,3 +48,20 @@ def generate_time_analysis():
                 f"  • {period}: Verkäufe {row['total_sale']:,.0f} Einkauf / Euro {row['total_purchase']:,.0f} Euro"
             )
 
+        # Produktverkäufe im Zeitverlauf
+        product_trend = df.groupby(["product_name", df["transaction_date"].dt.to_period("M")])["quantity_sold"].sum()
+        product_lines = ["📦 Monatlicher Verkaufs­trend nach Produkt:"]
+        product_trend = product_trend.sort_index()
+        for (name, period), qty in product_trend.items():
+            product_lines.append(f"  • {name} in {period}: {qty} Einheiten")
+
+        # Berichtszusammenfassung
+        report = [
+            f"⏳ Spitzenverkaufstag: {peak_day} Mit Betrag {peak_day_value:,.0f} Euro",
+            "",
+        ] + trend_lines + [""] + product_lines
+
+        return "\n".join(report)
+
+    except Exception as e:
+        return f"⚠️ Fehler bei der zeitlichen Verkaufsanalyse: {e}"
