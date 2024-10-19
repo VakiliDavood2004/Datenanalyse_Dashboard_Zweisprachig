@@ -39,3 +39,39 @@ def generate_inventory_analysis():
             "sold_percent": "mean"
         })
 
+        # Identifizierung der am wenigsten verkauften Produkte
+        low_sales = grouped.sort_values(by="quantity_sold").head(3)
+
+        # Identifizierung der meistverkauften Produkte
+        top_sales = grouped.sort_values(by="quantity_sold", ascending=False).head(3)
+
+        # Identifizierung von Produkten mit geringem Gewinn
+        low_profit = grouped.sort_values(by="profit").head(3)
+
+        # Produkte mit hohem Gewinn
+        top_profit = grouped.sort_values(by="profit", ascending=False).head(3)
+
+        lines = []
+
+        lines.append("🛒 Verkaufsprozentsatz im Verhältnis zum Lagerbestand:")
+        for name, row in grouped.iterrows():
+            lines.append(f"  • {name}: {row['sold_percent']}٪ Bereits verkauft")
+
+        lines.append("\n💸 Pricing Impact:")
+        for name, row in grouped.iterrows():
+            lines.append(f"  • {name}: Einkauf {row['purchase_price']:.0f} / Maximaler Verkauf {row['selling_price']:.0f}")
+
+        lines.append("\n📉 Produkte mit geringem Verkauf und geringem Gewinn:")
+        for name in set(low_sales.index).union(low_profit.index):
+            row = grouped.loc[name]
+            lines.append(f"  • {name}: Verkauf {row['quantity_sold']} / Gewinn {row['profit']:,.0f} Euro")
+
+        lines.append("\n📈 Produkte mit hohem Verkauf und hohem Gewinn:")
+        for name in set(top_sales.index).union(top_profit.index):
+            row = grouped.loc[name]
+            lines.append(f"  • {name}: Verkauf {row['quantity_sold']} / Gewinn {row['profit']:,.0f} Euro")
+
+        return "\n".join(lines)
+
+    except Exception as e:
+        return f"⚠️ Fehler bei der Lagerbestandsanalyse: {e}"
