@@ -30,3 +30,20 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #388E3C;
 }
+/* Globaler Stil */
+QWidget {
+    font-family: "IRANSans";
+    font-size: 14px;
+}
+
+/* Beschriftungsstile */
+QLabel {
+    padding: 12px;
+    font-size: 15pt;
+    font-weight: normal;
+    color: #333;
+    background-color: #F1F8E9;
+    border: 1px solid #C5E1A5;
+    border-radius: 8px;
+}
+
