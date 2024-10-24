@@ -30,6 +30,7 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #388E3C;
 }
+
 /* Globaler Stil */
 QWidget {
     font-family: "IRANSans";
@@ -47,3 +48,20 @@ QLabel {
     border-radius: 8px;
 }
 
+QLabel#title {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #1B5E20;
+}
+
+QScrollBar:vertical {
+    background: #E8F5E9;
+    width: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #66BB6A;
+    border-radius: 4px;
+}
