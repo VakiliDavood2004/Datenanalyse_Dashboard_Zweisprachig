@@ -109,21 +109,6 @@ Upon launching the program:
 
 > ⚠️ **Important:** The input file must strictly follow the format defined in `FORMAT.CSV`.
 
-Each module is self-documented with internal explanations.  
-To run the application, simply execute the `MAIN.PY` file.
-
----
-
-## 🧩 User Interface
-
-Upon launching the program:
-
-- **14 buttons** appear on the **left side** of the interface.
-- The **function of each button** is displayed on the **right side**.
-- The **first button** allows users to **load a data file**.
-
-> ⚠️ **Important:** The input file must strictly follow the format defined in `FORMAT.CSV`.
-
 ---
 
 ## 🗂️ Data Display
@@ -208,4 +193,12 @@ With appreciation and best wishes,
 ## 📄 گزارش‌ها و 📊 نمودارها
 
 - برنامه شامل **۴ کادر گزارش** است که تحلیل‌های دقیق از داده‌ها ارائه می‌دهند.  
-- همچنین دارای **۷ کادر نمودار** برای نمایش داده‌ها به‌صورت دایره‌ای، میله‌
+- همچنین دارای **۷ کادر نمودار** برای نمایش داده‌ها به‌صورت دایره‌ای، میله‌ای، خطی و سایر انواع نمودار است.  
+- با کلیک روی هر گزارش یا نمودار، آن بخش در پنجره‌ای مجزا و واضح باز می‌شود.
+
+---
+
+## 🙏 سپاس و قدردانی
+
+با تشکر و آرزوی موفقیت،  
+**داوود وکیلی**
