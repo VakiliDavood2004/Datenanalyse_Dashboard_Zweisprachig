@@ -199,3 +199,6 @@ class MainWindow(QMainWindow):
         self.update_sold_percentage_chart_image()
         self.update_sold_percentage_chart_image()
         self.update_sold_percentage_chart_image()
+        self.update_sold_percentage_chart_image()
+        self.update_sold_percentage_chart_image()
+        self.update_sold_percentage_chart_image()
