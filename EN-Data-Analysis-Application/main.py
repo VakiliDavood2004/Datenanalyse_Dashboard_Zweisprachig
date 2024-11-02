@@ -196,9 +196,84 @@ class MainWindow(QMainWindow):
         self.update_pie_chart_image()
         self.update_inventory_chart_image()
         self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
-        self.update_sold_percentage_chart_image()
+        self.update_sales_line_chart_image()
+        self.update_sales_bar_chart_image()
+        self.update_sales_share_chart_image()
+
+    def load_csv(self):
+        load_csv_and_insert(self, self.db_name, self.table_widget)
+        self.refresh_dashboard()
+
+    def update_summary(self):
+        self.report_label.setText(generate_summary())
+
+    def update_profitability(self):
+        self.profit_label.setText(generate_profitability_report())
+
+    def update_time_analysis(self):
+        self.time_label.setText(generate_time_analysis())
+
+    def update_inventory_analysis(self):
+        self.inventory_label.setText(generate_inventory_analysis())
+
+    def update_chart_image(self):
+        pixmap = get_profit_chart_pixmap()
+        if pixmap:
+            self.chart_label.setPixmap(pixmap)
+
+    def update_pie_chart_image(self):
+        pixmap = get_profit_pie_pixmap()
+        if pixmap:
+            self.pie_chart_label.setPixmap(pixmap)
+
+    def update_inventory_chart_image(self):
+        pixmap = get_inventory_chart_pixmap()
+        if pixmap:
+            self.inventory_chart_label.setPixmap(pixmap)
+
+    def update_sold_percentage_chart_image(self):
+        pixmap = get_sold_percentage_pie_pixmap()
+        if pixmap:
+            self.sold_percentage_chart_label.setPixmap(pixmap)
+
+    def update_sales_line_chart_image(self):
+        pixmap = get_sales_line_chart_pixmap()
+        if pixmap:
+            self.sales_line_chart_label.setPixmap(pixmap)
+
+    def update_sales_bar_chart_image(self):
+        pixmap = get_sales_bar_chart_pixmap()
+        if pixmap:
+            self.sales_bar_chart_label.setPixmap(pixmap)
+
+    def update_sales_share_chart_image(self):
+        pixmap = get_sales_share_pie_pixmap()
+        if pixmap:
+            self.sales_share_chart_label.setPixmap(pixmap)
+
+    def show_report_popup(self):
+        show_scrollable_dialog(self, "📊 Numerical Report" , generate_summary())
+
+    def show_profit_popup(self):
+        show_scrollable_dialog(self, "💹 Profitability Report", generate_profitability_report())
+
+    def show_time_popup(self):
+        show_scrollable_dialog(self, "📅 Time Series Analysis" , generate_time_analysis())
+
+    def show_inventory_popup(self):
+        show_scrollable_dialog(self, "📦 Inventory Analysis", generate_inventory_analysis())
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    try:
+        with open("style.css", "r", encoding="utf-8") as f:
+            app.setStyleSheet(f.read())
+    except Exception as e:
+        print(f"⚠️ Error loading style: {e}")
+
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+# pyinstaller --onefile --windowed --add-data "style.css;." --icon=icon.ico main.py
+# pyinstaller --onefile --windowed --add-data "style.css;." --icon=icon.ico main.py
