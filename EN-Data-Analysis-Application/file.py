@@ -78,3 +78,35 @@ def display_data(data, table_widget):
     for i in range(len(data)):
         for j in range(len(data.columns)):
             table_widget.setItem(i, j, QTableWidgetItem(str(data.iat[i, j])))
+
+def load_csv_and_insert(parent_widget, db_name, table_widget):
+    file_name, _ = QFileDialog.getOpenFileName(
+        parent_widget, "Select CSV file", "", "CSV Files (*.csv);;All Files (*)"
+    )
+
+    if file_name:
+        data = load_and_process_csv(file_name)
+        if data is not None:
+            display_data(data, table_widget)
+            success = import_csv_to_db(file_name, db_name)
+            if success:
+                QMessageBox.information(parent_widget, "Success", "CSV file has been successfully inserted into the database.")
+            else:
+                QMessageBox.critical(parent_widget, "Error", "Failed to insert data into the database.")
+        else:
+            QMessageBox.critical(parent_widget, "Error", "CSV file processing failed.")
+
+def display_existing_data(db_name, table_widget):
+    try:
+        conn = sqlite3.connect(db_name)
+        df = pd.read_sql_query("SELECT * FROM sales", conn)
+        conn.close()
+
+        table_widget.setRowCount(len(df))
+        table_widget.setColumnCount(len(df.columns))
+        table_widget.setHorizontalHeaderLabels(df.columns)
+        for i in range(len(df)):
+            for j in range(len(df.columns)):
+                table_widget.setItem(i, j, QTableWidgetItem(str(df.iat[i, j])))
+    except Exception as e:
+        print(f"Error loading previous data: {e}")
