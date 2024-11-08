@@ -102,7 +102,7 @@ def display_existing_data(db_name, table_widget):
         df = pd.read_sql_query("SELECT * FROM sales", conn)
         conn.close()
 
-        table_widget.setRowCount(len(df))
+        table_widget.setRowCo   unt(len(df))
         table_widget.setColumnCount(len(df.columns))
         table_widget.setHorizontalHeaderLabels(df.columns)
         for i in range(len(df)):
