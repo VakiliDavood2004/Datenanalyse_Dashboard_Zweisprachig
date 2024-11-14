@@ -47,3 +47,37 @@ def draw_profit_bar_chart():
     except Exception as e:
         print(f"⚠️ Error while plotting the profitability chart: {e}")
 
+# 🖼️ Generating a chart image for the main page
+def get_profit_chart_pixmap():
+    try:
+        conn = sqlite3.connect("sales.db")
+        query = "SELECT product_name, total_purchase, total_sale FROM sales"
+        df = pd.read_sql_query(query, conn)
+        conn.close()
+
+        df["profit"] = df["total_sale"] - df["total_purchase"]
+        product_profit = df.groupby("product_name")["profit"].sum().sort_values()
+        colors = ["green" if p >= 0 else "red" for p in product_profit]
+
+        fig, ax = plt.subplots(figsize=(8, 4))  # 👈 Smaller size for the main page
+        bars = ax.bar(product_profit.index, product_profit.values, color=colors)
+        ax.set_title("📉 Product Profitability Chart", fontsize=12)
+        ax.set_xlabel("Product Name")
+        ax.set_ylabel("Total Profit (Toman)")
+        ax.set_xticks(range(len(product_profit.index)))
+        ax.set_xticklabels(product_profit.index, rotation=45, ha="right")
+        ax.grid(axis="y", linestyle="--", alpha=0.4)
+
+        buffer = BytesIO()
+        fig.tight_layout()
+        fig.savefig(buffer, format="png")
+        buffer.seek(0)
+
+        pixmap = QPixmap()
+        pixmap.loadFromData(buffer.getvalue())
+        plt.close(fig)
+        return pixmap
+
+    except Exception as e:
+        print(f"⚠️ Error while generating the chart image {e}")
+        return None
