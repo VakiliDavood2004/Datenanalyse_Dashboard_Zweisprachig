@@ -1,0 +1,65 @@
+/*
+
+This CSS file is designed to enhance the visual appearance of the application's user interface using Qt style conventions. 
+Natural green tones are applied to QPushButton elements for default, hover, and pressed states, creating an interactive and 
+engaging feel. Widgets are styled with the IRANSans font, and the general font size is set to 14 pixels. QLabel elements 
+feature a very light green background, subtle borders, and clear typography. The title label is styled with a larger font 
+size and a darker green color to stand out.The vertical scrollbar is narrow, with a green background and a light green handle, 
+omplementing the overall theme and providing a modern, pleasant look.
+
+*/
+
+
+/* Button Styles */
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #2E7D32;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+QPushButton:hover {
+    background-color: #66BB6A;
+}
+
+QPushButton:pressed {
+    background-color: #388E3C;
+}
+
+/* Global Style */
+QWidget {
+    font-family: "IRANSans";
+    font-size: 14px;
+}
+
+/* Label Styles */
+QLabel {
+    padding: 12px;
+    font-size: 15pt;
+    font-weight: normal;
+    color: #333;
+    background-color: #F1F8E9;
+    border: 1px solid #C5E1A5;
+    border-radius: 8px;
+}
+
+QLabel#title {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #1B5E20;
+}
+
+QScrollBar:vertical {
+    background: #E8F5E9;
+    width: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #66BB6A;
+    border-radius: 4px;
+}
